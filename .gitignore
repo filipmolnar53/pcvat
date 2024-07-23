@@ -66,3 +66,6 @@ cvat-core/reports
 
 # produced by cvat/apps/iam/rules/tests/generate_tests.py
 /cvat/apps/*/rules/*_test.gen.rego
+
+nuctl*
+*.onnx

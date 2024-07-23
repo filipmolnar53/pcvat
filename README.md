@@ -48,6 +48,37 @@ do trainings and a dedicated support with 24 hour SLA.
 - [Frequently asked questions](https://docs.cvat.ai/docs/faq/)
 - [Where to ask questions](#where-to-ask-questions)
 
+## Running CVAT
+- clone and run the project
+````
+git clone https://github.com/filipmolnar53/pcvat.git
+cd pcvat
+
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build -d
+````
+
+- create superuser account
+````
+docker exec -it cvat_server bash -ic 'python3 ~/manage.py createsuperuser'
+````
+
+- install nuctl command line tool to build and deploy serverless functions
+````
+wget https://github.com/nuclio/nuclio/releases/download/1.13.0/nuctl-1.13.0-linux-amd64
+sudo chmod +x nuctl-1.13.0-linux-amd64
+sudo ln -sf $(pwd)/nuctl-1.13.0-linux-amd64 /usr/local/bin/nuctl
+````
+
+- to deploy Segment Anything run the following command
+````
+serverless/deploy_gpu.sh serverless/pytorch/facebookresearch/sam/
+````
+
+- to deploy own onnx model
+````
+serverless/deploy_cpu.sh serverless/onnx/Photoneo/mmdeploy/
+````
+
 ## Partners ❤️
 
 CVAT is used by teams all over the world. In the list, you can find key companies which
