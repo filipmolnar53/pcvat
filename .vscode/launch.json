@@ -181,6 +181,21 @@
             "console": "internalConsole"
         },
         {
+            "name": "Serverless Debug",
+            "type": "python",
+            "request": "attach",
+            "connect": {
+              "host": "localhost",
+              "port": 5678
+            },
+            "pathMappings": [
+              {
+                "localRoot": "${workspaceFolder}/serverless/onnx/WongKinYiu/yolov7/nuclio",
+                "remoteRoot": "/opt/nuclio"
+              }
+            ]
+        },
+        {
             "name": "server: chrome",
             "type": "pwa-chrome",
             "request": "launch",
@@ -523,6 +538,18 @@
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
             "disableOptimisticBPs": true,
+        },
+        {
+            "name": "onnx",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/serverless/onnx/Photoneo/mmdeploy/nuclio/run_onnxruntime.py",
+            "console": "integratedTerminal",
+            "justMyCode": false,
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${cwd}"
+            }
         }
     ],
     "compounds": [

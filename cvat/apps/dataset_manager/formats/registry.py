@@ -96,6 +96,7 @@ def make_exporter(name):
 
 
 # pylint: disable=unused-import
+import cvat.apps.dataset_manager.formats.photoneo
 import cvat.apps.dataset_manager.formats.coco
 import cvat.apps.dataset_manager.formats.cvat
 import cvat.apps.dataset_manager.formats.datumaro

@@ -55,6 +55,10 @@ def handler(context, event):
                 "points": box.tolist(),
                 "type": "rectangle",
             })
+    context.logger.info(json.dumps(results, indent=4))
+
+    context.logger.info("json.dumps(results)==============================================")
+    context.logger.info(json.dumps(results))
 
     return context.Response(body=json.dumps(results), headers={},
         content_type='application/json', status_code=200)

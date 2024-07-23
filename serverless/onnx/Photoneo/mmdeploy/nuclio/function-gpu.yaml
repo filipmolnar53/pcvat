@@ -1,0 +1,55 @@
+metadata:
+  name: onnx-photoneo-mmdeploy
+  namespace: cvat
+  annotations:
+    name: MMDeploy
+    type: detector
+    spec: |
+      [
+        { "id": 0, "name": "box", "type": "polygon" },
+        { "id": 1, "name": "box_centroid", "type": "polygon" },
+      ]
+
+spec:
+  description: MMDeploy from Photoneo via onnx-runtime
+  runtime: 'python:3.8'
+  handler: main:handler
+  eventTimeout: 30s
+  build:
+    # image: cvat.onnx.wongkinyiu.yolov7:latest-gpu
+    baseImage: nvidia/cuda:11.8.0-cudnn8-runtime-ubuntu22.04
+    directives:
+      preCopy:
+        - kind: USER
+          value: root
+        - kind: RUN
+          value: apt update && apt install --no-install-recommends -y wget python3-pip
+        - kind: WORKDIR
+          value: /opt/nuclio
+        - kind: RUN
+          value: pip install onnxruntime-gpu=='1.16.*' opencv-python-headless pillow pyyaml
+        - kind: WORKDIR
+          value: /opt/nuclio
+        # - kind: RUN
+        #   value: wget https://your-model-repository/end2end.onnx
+        - kind: RUN
+          value: ln -s /usr/bin/python3 /usr/bin/python
+
+  triggers:
+    myHttpTrigger:
+      numWorkers: 1
+      kind: 'http'
+      workerAvailabilityTimeoutMilliseconds: 10000
+      attributes:
+        maxRequestBodySize: 33554432 # 32MB
+
+  resources:
+    limits:
+      nvidia.com/gpu: 1
+
+  platform:
+    attributes:
+      restartPolicy:
+        name: always
+        maximumRetryCount: 3
+      mountMode: volume

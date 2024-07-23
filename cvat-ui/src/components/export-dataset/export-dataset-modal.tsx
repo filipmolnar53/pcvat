@@ -74,6 +74,7 @@ function ExportDatasetModal(props: StateToProps): JSX.Element {
             } else if (instance.mode === 'annotation' && instance.dimension === '2d') {
                 form.setFieldsValue({ selectedFormat: 'CVAT for images 1.1' });
             }
+            form.setFieldsValue({ selectedFormat: 'COCO Photoneo 1.0' });
         }
     }, [instance]);
 

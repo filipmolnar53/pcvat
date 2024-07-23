@@ -6,7 +6,6 @@ import yaml
 from model_handler import ModelHandler
 from PIL import Image
 
-
 def init_context(context):
     context.logger.info("Init context...  0%")
 

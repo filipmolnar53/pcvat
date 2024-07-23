@@ -1,0 +1,29 @@
+// {"worker_id": "0"}n","stream":"stdout","time":"2024-07-22T06:51:04.489512706Z"}
+// {
+//   "log": "24.07.22 06:51:04.489 u001b[34m(I)u001b[0m u001b[37msor.http.w0.python.loggeru001b[0m [{"confidence": "0.6966025829315186", "label": "tie", "points": [394.11273193359375, 1.6380615234375, 742.5640869140625, 165.18350219726562], "type": "rectangle"}, {"confidence": "0.6380863785743713", "label": "person", "points": [909.24169921875, 6.602062225341797, 1312.992919921875, 368.7241516113281], "type": "rectangle"}] {"worker_id": "0"}n",
+//   "stream": "stdout",
+//   "time": "2024-07-22T06:51:04.489515725Z"
+// }
+// [
+//   {
+//     "confidence": "0.6966025829315186",
+//     "label": "tie",
+//     "points": [394.11273193359375, 1.6380615234375, 742.5640869140625, 165.18350219726562],
+//     "type": "rectangle"
+//   },
+//   {
+//     "confidence": "0.6380863785743713",
+//     "label": "person",
+//     "points": [909.24169921875, 6.602062225341797, 1312.992919921875, 368.7241516113281],
+//     "type": "rectangle"
+//   }
+// ]
+[
+  { "confidence": "0.7066897749900818", "label": "0", "points": [801, 681, 985, 809], "type": "rectangle" },
+  { "confidence": "0.665131688117981", "label": "0", "points": [1300, 740, 1492, 981], "type": "rectangle" },
+  { "confidence": "0.6247944235801697", "label": "0", "points": [1558, 48, 1679, 338], "type": "rectangle" },
+  { "confidence": "0.5957618951797485", "label": "0", "points": [50, 544, 257, 699], "type": "rectangle" },
+  { "confidence": "0.5612866282463074", "label": "0", "points": [1197, 132, 1327, 260], "type": "rectangle" },
+  { "confidence": "0.5269134640693665", "label": "0", "points": [1318, 69, 1370, 122], "type": "rectangle" },
+  { "confidence": "0.5235857963562012", "label": "0", "points": [864, 528, 987, 679], "type": "rectangle" }
+]
