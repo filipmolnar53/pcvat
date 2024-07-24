@@ -41,8 +41,7 @@ class ModelHandler:
         context.logger.info(f"image: {image}")
 
         image_input, real_shape = preprocess_image(image)
-        for _ in range(5):
-            dets, labels, masks = self.sess.run(["dets", "labels", "masks"], {"input": image_input})
+        dets, labels, masks = self.sess.run(["dets", "labels", "masks"], {"input": image_input})
 
         scores, labels, boxes, masks = postprocess_results(dets, labels, masks, image.shape[:2], real_shape)
         context.logger.info(f"scores: {scores}")

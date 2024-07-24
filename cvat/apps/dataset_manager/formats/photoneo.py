@@ -5,8 +5,9 @@
 import zipfile
 
 from datumaro.components.dataset import Dataset
-from datumaro.components.annotation import AnnotationType
+from datumaro.components.annotation import AnnotationType, LabelCategories
 from datumaro.plugins.coco_format.importer import CocoImporter
+from datumaro.components.annotation import Points
 
 from cvat.apps.dataset_manager.bindings import GetCVATDataExtractor, detect_dataset, \
     import_dm_annotations
@@ -46,15 +47,34 @@ def my_importer(src_file, temp_dir, instance_data, load_data_callback=None, **kw
 
         with open(json_path, 'r') as file:
             data = json.load(file)
-            my_export_logger.info(f'data--: {data}')
 
-        my_export_logger.info(f'dataset--: {str(dataset)}')
+        label_categories = dataset.categories().get(AnnotationType.label, None)
+        for category in data["categories"]:
+            for kp in category["keypoints"]:
+                label_categories.add(category["name"]+kp)
 
-        for item in dataset:
-            my_export_logger.info(f'item--: {item.annotations}')
+        dataset.categories()[AnnotationType.label] = label_categories
+        my_export_logger.info(f"dataset_categories: {dataset.categories().get(AnnotationType.label, None)}")
 
-        my_export_logger.info(f'dataset json dump--: {json.dumps(instance, indent=4)}')
+        for ann in data["annotations"]:
+            file_name = find_property_by_id(data["images"], ann["image_id"], "file_name")
+            keypoints = find_property_by_id(data["categories"], ann["category_id"], "keypoints")
+            ann_label = find_property_by_id(data["categories"], ann["category_id"], "name")
+            my_export_logger.info(f"ann : {ann_label}, {keypoints}")
+            my_export_logger.info(f"keypoints: {ann}")
+            for i, kp in enumerate(keypoints):
+                x = ann["keypoints"][i*3]
+                y = ann["keypoints"][i*3+1]
+                vis = ann["keypoints"][i*3+2]
 
+                if vis:
+                    item = dataset.get(file_name.split(".")[0])
+                    label_index = label_categories.find(ann_label+kp)
+                    my_export_logger.info(f"label_index: {label_index[0]}")
+                    item.annotations.append(Points([x,y], label=label_index[0]))
+                    my_export_logger.info(f"item: {item}")
+                    dataset.put(item)
+                    # my_export_logger.info(f"new item: {dataset.get(file_name.split(".")[0])}")
         import_dm_annotations(dataset, instance_data)
     else:
         dataset = Dataset.import_from(src_file.name,
@@ -116,11 +136,11 @@ def find_prefix(string, prefixes):
     return None
 
 
-def find_name_by_id(categories, id_to_find):
+def find_property_by_id(categories, id_to_find, property):
     for category in categories:
         my_export_logger.info(f'===cat: {category}')
         if category['id'] == id_to_find:
-            return category['name']
+            return category[property]
     return None
 
 def remove_prefix(string, prefix):
@@ -188,7 +208,7 @@ def my_exporter(dst_file, temp_dir, instance_data, save_images=False):
     # reindex annotations to new categories
     # create 'num_keypoints' and 'keypoints' fields
     for i, ann in enumerate(data["annotations"]):
-        label = find_name_by_id(data["categories"], ann["category_id"])
+        label = find_property_by_id(data["categories"], ann["category_id"], "name")
         data["annotations"][i]["category_id"] = categories[label]["id"]
         data["annotations"][i]["num_keypoints"] = 0
         data["annotations"][i]["keypoints"] = [0] * (3 * len(categories[label]["keypoints"]))
@@ -196,7 +216,7 @@ def my_exporter(dst_file, temp_dir, instance_data, save_images=False):
     data["categories"] = list(categories.values())
 
     for i, ann in enumerate(data["annotations"]):
-        label = find_name_by_id(data["categories"], ann["category_id"])
+        label = find_property_by_id(data["categories"], ann["category_id"], "name")
 
         for kp in points_data[label]:
             my_export_logger.info('keypoints: {}'.format(kp))
