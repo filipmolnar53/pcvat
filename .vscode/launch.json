@@ -550,6 +550,19 @@
             "env": {
                 "PYTHONPATH": "${cwd}"
             }
+        },
+        {
+            "name": "test import export",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/cvat/apps/dataset_manager/tests/test_format_photoneo.py",
+            "console": "integratedTerminal",
+            "python":"${command:python.interpreterPath}",
+            "justMyCode": false,
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${cwd}"
+            }
         }
     ],
     "compounds": [

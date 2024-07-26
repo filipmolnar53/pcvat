@@ -31,7 +31,7 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 my_fh.setFormatter(formatter)
 my_export_logger.addHandler(my_fh)
 
-my_export_logger.info('first--')
+my_export_logger.info('first')
 
 @importer(name="COCO Photoneo", version="1.0", ext="ZIP")
 def my_importer(src_file, temp_dir, instance_data, load_data_callback=None, **kwargs):
@@ -138,7 +138,6 @@ def find_prefix(string, prefixes):
 
 def find_property_by_id(categories, id_to_find, property):
     for category in categories:
-        my_export_logger.info(f'===cat: {category}')
         if category['id'] == id_to_find:
             return category[property]
     return None
@@ -162,7 +161,8 @@ def my_exporter(dst_file, temp_dir, instance_data, save_images=False):
         dataset = Dataset.from_extractors(extractor, env=dm_env)
         dataset.export(temp_dir, 'coco_instances', save_images=save_images,
             merge_images=True)
-
+    my_export_logger.info('dataset: \n{}'.format(dataset.categories().get(AnnotationType.label, None)))
+    my_export_logger.info(f'tmp: \n{temp_dir}')
 
     json_path = temp_dir+"/annotations/"#instances_default.json"
     json_files = []
@@ -178,17 +178,19 @@ def my_exporter(dst_file, temp_dir, instance_data, save_images=False):
     # create categories object
     categories = {}
     categories_labels = []
+    my_export_logger.info(f'data loaded\n')
+
     for shape in instance_data.shapes:
         if shape.type == "rectangle" or shape.type == "polygon":
             if shape.label not in categories:
                 # cvat indexes from 1
                 categories[shape.label] = {"id": len(categories)+1, "name": shape.label, "keypoints": set()}
                 categories_labels.append(shape.label)
+                my_export_logger.info(f'shape.label: \n{shape.label}')
 
     categories_labels = sorted(categories_labels, key=len, reverse=True)
     points_data = {key: [] for key in categories_labels}
     my_export_logger.info('categories: {}'.format(categories))
-    my_export_logger.info('categories labels: {}'.format(str(categories_labels)))
 
     # extract all keypoints, assign frame name and label to them
     for frame_data in instance_data.group_by_frame(include_empty=True):

@@ -1,0 +1,13 @@
+FROM cvat/server
+
+USER root
+RUN apt-get update && apt-get install -y patch wget
+
+USER django
+
+COPY --chown=${USER} photoneo.py /home/django/cvat/apps/dataset_manager/formats/photoneo.py
+COPY --chown=${USER} registry.patch /home/django/registry.patch
+
+RUN cd /home/django/cvat/ && patch -R apps/dataset_manager/formats/registry.py < /home/django/registry.patch
+
+USER django
