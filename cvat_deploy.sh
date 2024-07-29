@@ -1,9 +1,6 @@
 #!/bin/bash
-
-# Step 1: Start Docker Compose services in detached mode
 docker compose up -d
 
-# Step 2: Download nuctl
 if ! command -v nuctl &> /dev/null
 then
     echo "nuctl not found, downloading..."
@@ -14,5 +11,32 @@ else
     echo "nuctl is already installed"
 fi
 
-# Step 3: Run the deploy_gpu.sh script
+usage() {
+  echo "Usage: $0 [-su] [--create-superuser]"
+  exit 1
+}
+
+# Parse options
+while [[ "$1" != "" ]]; do
+  case $1 in
+    -su | --create-superuser )
+      s_flag=true
+      ;;
+    -h | --help )
+      usage
+      ;;
+    * )
+      echo "Invalid option: $1"
+      usage
+      ;;
+  esac
+  shift
+done
+
+# Check if the -s or --create-su flag was provided
+if [ "$s_flag" = true ]; then
+    docker exec -it cvat_server bash -ic 'python3 ~/manage.py createsuperuser'
+fi
+
+
 serverless/deploy_gpu.sh serverless/pytorch/facebookresearch/sam/
