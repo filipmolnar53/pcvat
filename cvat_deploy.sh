@@ -1,9 +1,6 @@
 #!/bin/bash
-
-# Step 1: Start Docker Compose services in detached mode
 docker compose up -d
 
-# Step 2: Download nuctl
 if ! command -v nuctl &> /dev/null
 then
     echo "nuctl not found, downloading..."
@@ -14,5 +11,7 @@ else
     echo "nuctl is already installed"
 fi
 
-# Step 3: Run the deploy_gpu.sh script
+docker exec -it cvat_server bash -ic 'python3 ~/manage.py createsuperuser'
+
+
 serverless/deploy_gpu.sh serverless/pytorch/facebookresearch/sam/
